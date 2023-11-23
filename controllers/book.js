@@ -1,6 +1,25 @@
 const Book=require("../models/Book")
 
 
+const AthorBook= (req, res) => {
+  const authorId = req.params.id;
+
+  Book.findByAuthor(authorId)
+    .populate("author") 
+    .populate("categories")
+    .then((books) => {
+      res.status(200).json({
+        books,
+        message: "success",
+      });
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).json({ message: 'Erreur serveur' });
+    });
+};
+
+
 
 const fetchBooks = (req, res) => {
   Book.find()
@@ -104,10 +123,26 @@ const DeleteBook=(req, res) => {
   }
 
 
+  const BookByAuthor= (req, res) => {
+    const authorId = req.params.id;
+      Book.findByAuthor(authorId)
+      .populate('author') // Si vous souhaitez également récupérer les détails de l'auteur
+      .then((books) => {
+        res.status(200).json({ books, message: 'Livres trouvés avec succès' });
+      })
+      .catch((error) => {
+        console.error(error);
+        res.status(500).json({ error, message: 'Erreur serveur' });
+      });
+  };
+
+
  module.exports={
     fetchBooks:fetchBooks,
     addBook:addBook,
     getBookById:getBookById,
     UpdateBook:UpdateBook,
-    DeleteBook:DeleteBook
+    DeleteBook:DeleteBook,
+    AthorBook:AthorBook,
+    BookByAuthor:BookByAuthor,
  }

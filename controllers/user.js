@@ -57,3 +57,36 @@ exports.login = (req, res, next) => {
             res.status(500).json({ error: error });
         });
 }
+
+
+
+
+exports.Signupe = (req, res, next) => {
+    // Utiliser bcrypt pour hasher le mot de passe
+    bcrypt.hash(req.body.password, 10)
+      .then((hash) => {
+        const newUser = new User({
+          email: req.body.email,
+          password: hash,
+          lastname: req.body.lastname,
+          firstname: req.body.firstname,
+          role: req.body.role,
+        });
+  
+        newUser.save()
+          .then((savedUser) => {
+            // Utiliser la méthode toPublic pour créer un objet public de l'utilisateur
+            const publicUser = savedUser.toPublic();
+  
+            // Supprimer le mot de passe du résultat
+            delete publicUser.password;
+  
+            res.status(201).json({ user: publicUser, message: 'Utilisateur créé avec succès' });
+          })
+          .catch((error) => {
+            console.error(error);
+            res.status(400).json({ message: 'Erreur lors de la création de utilisateur', error: error.message });
+          });
+      })
+      .catch((error) => res.status(500).json({ error }));
+  };

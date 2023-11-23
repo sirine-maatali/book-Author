@@ -26,5 +26,5 @@ app.use("/api/author",AuthorRoutes)
 app.use("/api/cats",catRoutes)  
 app.use("/api/tasks",taskRoutes)
 app.use("/api/books",bookRoutes)
-app.use("/api/auth",userRoutes)
+app.use("/api/user",userRoutes)
 module.exports=app

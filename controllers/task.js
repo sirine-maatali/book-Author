@@ -41,23 +41,40 @@ const fetchTasks =(req,res)=>{
    });
   }
   
- const addTask=(req, res) => {
+//  const addTask= (req, res) => {
+//     const task = new Task(req.body);
+//     task
+//       .save()
+//       .then(() =>
+//         res.status(201).json({
+//           model: task,
+//           message: "Created!",
+//         })
+//       )
+//       .catch((error) => {
+//         res.status(400).json({
+//           error: error.message,
+//           message: "Données invalides",
+//         });
+//       });
+//   }
+
+const addTask = async (req, res) => {
+  try {
     const task = new Task(req.body);
-    task
-      .save()
-      .then(() =>
-        res.status(201).json({
-          model: task,
-          message: "Created!",
-        })
-      )
-      .catch((error) => {
-        res.status(400).json({
-          error: error.message,
-          message: "Données invalides",
-        });
-      });
+    await task.save();
+    res.status(201).json({
+      model: task,
+      message: "Created!",
+    });
+  } catch (error) {
+    res.status(400).json({
+      error: error.message,
+      message: "Données invalides",
+    });
   }
+}
+
 
 //modifier
 const UpdateTask=(req, res) => {

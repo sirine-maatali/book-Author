@@ -7,7 +7,7 @@ const taskController=require("../controllers/task")
 const auth=require ("../middlewares/auth")
 
 
-  router.get("/",auth.loggedMiddleware,taskController.fetchTasks)
+  router.get("/",taskController.fetchTasks)
   
   router.get("/:id",taskController.getTaskById)
   
