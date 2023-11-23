@@ -5,7 +5,7 @@ const bookRoutes=require("./routes/book")
 const userRoutes=require("./routes/user")
 const catRoutes=require("./routes/category")
 const AuthorRoutes=require("./routes/author")
-
+const eventRoutes=require("./routes/event")
 const mongoose = require('mongoose')
 
 mongoose
@@ -27,4 +27,5 @@ app.use("/api/cats",catRoutes)
 app.use("/api/tasks",taskRoutes)
 app.use("/api/books",bookRoutes)
 app.use("/api/user",userRoutes)
+app.use("/api/event",eventRoutes)
 module.exports=app

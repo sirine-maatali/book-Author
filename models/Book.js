@@ -5,7 +5,20 @@ const{Schema} = mongoose;
 
 const bookSchema = mongoose.Schema({
   title: { type: String, required: true },
-  author: { type: Schema.Types.ObjectId, ref:'Author' },
+  // author: { type: Schema.Types.ObjectId, ref:'Author' },
+  author: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Author',
+    required: true,
+    validate: {
+      validator: async function (authorId) {
+        const author = await mongoose.model('Author').findById(authorId);
+        return author && author.books.length > 0;
+      },
+      message: 'L\'auteur doit avoir écrit d\'autres livres avant.'
+    }
+  },
+
   publYear: { type: Date, required: true },
   description: { type: String, required: true },
   nbPages: { type: Number, required: false },
@@ -17,7 +30,7 @@ const bookSchema = mongoose.Schema({
     timestamps: true,
   });
 
-//bookSchema.plugin(idValidator);
+  bookSchema.plugin(idValidator);
 
 // Méthode statique pour trouver tous les livres avec le même auteur
 

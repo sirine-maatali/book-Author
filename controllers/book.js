@@ -67,23 +67,58 @@ Book.findOne({ _id: req.params.id })
 }
 
 
- const addBook=(req, res) => {
-    const book = new Book(req.body);
-    book
-      .save()
-      .then(() =>
-        res.status(201).json({
-          model: book,
-          message: "Created!",
-        })
-      )
-      .catch((error) => {
-        res.status(400).json({
-          error: error.message,
-          message: "Données invalides",
-        });
+//  const addBook=(req, res) => {
+//     const book = new Book(req.body);
+//     book
+//       .save()
+//       .then(() =>
+//         res.status(201).json({
+//           model: book,
+//           message: "Created!",
+//         })
+//       )
+//       .catch((error) => {
+//         res.status(400).json({
+//           error: error.message,
+//           message: "Données invalides",
+//         });
+//       });
+//   }
+
+
+const addBook = (req, res) => {
+  const book = new Book(req.body);
+  book
+    .validate()
+    .then(() => {
+      // Vérifier si l'auteur a des anciens livres
+      const authorId = book.author; // Assurez-vous que le champ author est présent dans le corps de la requête
+      return Author.findById(authorId);
+    })
+    .then((author) => {
+      if (!author || !author.books || author.books.length === 0) {
+        throw new Error('L\'auteur doit avoir écrit d\'autres livres avant.');
+      }
+
+      return book.save();
+    })
+    .then((savedBook) => {
+      res.status(201).json({
+        model: savedBook,
+        message: "Livre créé avec succès!",
       });
-  }
+    })
+    .catch((error) => {
+      res.status(400).json({
+        error: error.message,
+        message: "Données invalides",
+      });
+    });
+};
+
+
+
+
 
 //modifier
 const UpdateBook=(req, res) => {
